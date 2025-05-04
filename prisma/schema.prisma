@@ -1,0 +1,120 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userid        Int    @id @default(autoincrement())  
+  nik           Int    @unique 
+  nama          String
+  jenisKelamin  String @map("jenis_kelamin")
+  tanggalLahir  DateTime @default(now()) @map("tanggal_lahir")
+  email         String  @unique
+  alamat        String
+  pendidikan    String
+  pekerjaan     String
+  agama         String
+  perkawinan    String
+  statusHidup   StatusHidup @default(HIDUP)
+  role          UserRole  @default(USER)
+  password      String  
+
+  // Relasi ke tabel lain
+  pengajuan     Pengajuan[] 
+  sosial        Sosial[]
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  FO
+}
+
+enum StatusHidup {
+  HIDUP
+  MENINGGAL 
+}
+
+model Pengajuan {
+  pengajuanid     Int    @id @default(autoincrement())
+  nik             Int
+  nama            String
+  alamat          String
+  noHp            String  
+  ktp             String  @unique // Agar tidak ada duplikasi data KTP
+  kk              String  @unique // Agar tidak ada duplikasi data KK
+  dokumenPenunjang  String  @unique
+  keperluan       String 
+  tanggalPengajuan DateTime @default(now()) @map("tanggal_beli")
+  statusPengajuan StatusPengajuan @default(PENDING)
+
+  // Relasi ke User
+  user            User   @relation(fields: [nik], references: [nik], onDelete: Cascade)
+}
+
+enum StatusPengajuan {
+  PENDING
+  ON_PROCESS
+  MENUNGGU_TTD
+  SELESAI
+}
+
+model Berita {
+  beritaid        Int    @id @default(autoincrement())
+  judul     String
+  tanggal   DateTime @default(now())
+  gambar    String
+  isiBerita String
+}
+
+model Lapor {
+  laporid         Int    @id @default(autoincrement())
+  nama       String
+  nohp       String
+  isiLaporan String @map("isi_laporan") 
+  lampiran   String 
+  statusLapor statusLapor @default(MENUNGGU)
+}
+enum statusLapor {
+  MENUNGGU
+  PROSESS
+  DITINDAK_LANJUTI
+}
+
+model Aset {
+  asetid          Int    @id @default(autoincrement())
+  nama        String
+  tanggalBeli DateTime @default(now()) @map("tanggal_beli")
+  harga       Float
+  statusAset  AsetStatus @default(ADA)
+  keterangan  String
+}
+
+enum AsetStatus {
+  ADA
+  HILANG
+  RUSAK
+}
+
+model Sosial {
+  sosialid          Int    @id @default(autoincrement())
+  nik         Int
+  nama        String
+  alamat      String
+  jenisBantuan String @map("jenis_bantuan")
+  usulSanggah UsulSanggah @default(LAYAK)
+
+  // Relasi ke User
+  user        User   @relation(fields: [nik], references: [nik], onDelete: Cascade)
+}
+
+enum UsulSanggah {
+  LAYAK
+  TIDAK_LAYAK
+}
