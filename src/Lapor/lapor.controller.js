@@ -11,7 +11,7 @@ router.post('/', upload.single('lampiran'), async (req, res) => {
             nama: req.body.nama,
             nohp: req.body.nohp,
             isiLaporan: req.body.isiLaporan,
-            lampiran: req.file ? req.file.filename : null // ambil nama file dari multer
+            lampiran: req.file ? req.file.filename : null, // ambil nama file dari multer
         }
 
         const laporan = await laporService.createLaporan(laporanBaru)

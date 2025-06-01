@@ -1,17 +1,17 @@
 const pengajuanRepository = require("./pengajuan.repository");
 
 // Fungsi untuk membuat pengajuan baru
-const createPengajuan = async (pengajuanid, nik, nama, alamat, noHp, ktp, kk, dokumenPenunjang) => {
+const createPengajuan = async (nik, nama, alamat, noHp, ktp, kk, lampiran, keperluan) => {
   try {
     const newPengajuan = await pengajuanRepository.insertPengajuan(
-      pengajuanid,
       nik,
       nama,
       alamat,
       noHp,
       ktp,
       kk,
-      dokumenPenunjang
+      lampiran,
+      keperluan
     );
     return newPengajuan;
   } catch (error) {
@@ -22,7 +22,7 @@ const createPengajuan = async (pengajuanid, nik, nama, alamat, noHp, ktp, kk, do
 // Fungsi untuk mendapatkan semua pengajuan
 const getAllPengajuan = async () => {
   try {
-    const pengajuan = await pengajuanRepository.findAllPengajuan();
+    const pengajuan = await pengajuanRepository.getAllPengajuan();
     return pengajuan;
   } catch (error) {
     throw new Error("Gagal mengambil data pengajuan: " + error.message);

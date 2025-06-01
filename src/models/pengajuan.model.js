@@ -1,7 +1,7 @@
 const pengajuanList = [];
 
 class Pengajuan {
-    constructor(nik, nama, alamat, noHp, ktp, kk, dokumenPenunjang,keperluan, statusPengajuan) {
+    constructor(nik, nama, alamat, noHp, ktp, kk, dok, keperluan, statusPengajuan) {
         this.id = pengajuanList.length + 1;
         this.nik = nik;
         this.nama = nama;
@@ -9,7 +9,7 @@ class Pengajuan {
         this.noHp = noHp;
         this.ktp = ktp;
         this.kk = kk;
-        this.dokumenPenunjang = dokumenPenunjang;
+        this.dok = dok;
         this.keperluan = keperluan;
         this.statusPengajuan = statusPengajuan;
     }

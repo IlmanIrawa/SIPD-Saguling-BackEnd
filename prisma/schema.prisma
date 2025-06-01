@@ -49,16 +49,18 @@ model Pengajuan {
   noHp            String  
   ktp             String  @unique // Agar tidak ada duplikasi data KTP
   kk              String  @unique // Agar tidak ada duplikasi data KK
-  dokumenPenunjang  String  @unique
+  lampiran        String  @unique
   keperluan       String 
   tanggalPengajuan DateTime @default(now()) @map("tanggal_beli")
   statusPengajuan StatusPengajuan @default(PENDING)
+  catatan         String @default("-")
 
   // Relasi ke User
   user            User   @relation(fields: [nik], references: [nik], onDelete: Cascade)
 }
 
 enum StatusPengajuan {
+  TOLAK
   PENDING
   ON_PROCESS
   MENUNGGU_TTD

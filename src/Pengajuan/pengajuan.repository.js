@@ -1,91 +1,83 @@
-const prisma = require("../db");
+const prisma = require('../db')
 
-// Menambahkan pengajuan baru
-const insertPengajuan = async (
-  pengajuanid,
+// Fungsi untuk membuat pengajuan baru
+const createPengajuan = async (
   nik,
-  nama,
-  alamat,
-  noHp,
-  ktp,
-  kk,
-  dokumenPenunjang,
-  tanggalPengajuan
+      nama,
+      alamat,
+      noHp,
+      ktp,
+      kk,
+      lampiran,
+      keperluan
 ) => {
   try {
-    if (!pengajuanid || !nik || !nama || !alamat || !noHp || !ktp || !kk || !dokumenPenunjang) {
-      throw new Error("Semua field wajib diisi");
-    }
-
-    const newPengajuan = await prisma.pengajuan.create({
-      data: {
-        pengajuanid,
-        nik,
-        nama,
-        alamat,
-        noHp,
-        ktp,
-        kk,
-        dokumenPenunjang,
-        tanggalPengajuan: tanggalPengajuan ? new Date(tanggalPengajuan) : new Date(),
-        statusPengajuan: "PENDING",
-      },
-    });
+    const newPengajuan = await pengajuanRepository.insertPengajuan(
+      nik,
+      nama,
+      alamat,
+      noHp,
+      ktp,
+      kk,
+      lampiran,
+      keperluan
+    );
     return newPengajuan;
   } catch (error) {
-    console.error("Gagal membuat pengajuan:", error);
-    throw new Error("Gagal membuat pengajuan");
+    throw new Error("Gagal membuat pengajuan: " + error.message);
   }
 };
 
-// Mendapatkan semua pengajuan
-const findAllPengajuan = async () => {
+// Fungsi untuk mendapatkan semua pengajuan
+const getAllPengajuan = async () => {
   try {
-    return await prisma.pengajuan.findMany();
-  } catch (error) {
-    console.error("Gagal mengambil data pengajuan:", error);
-    throw new Error("Gagal mengambil data pengajuan");
-  }
-};
-
-// Mencari pengajuan berdasarkan pengajuanid
-const findPengajuanById = async (pengajuanId) => {
-  try {
-    const pengajuan = await prisma.pengajuan.findUnique({
-      where: { pengajuanid: Number(pengajuanId) },
-    });
-    if (!pengajuan) throw new Error("Pengajuan tidak ditemukan");
+    const pengajuan = await prisma.pengajuan.findMany(); // langsung pakai prisma
     return pengajuan;
   } catch (error) {
-    console.error("Kesalahan saat mencari pengajuan:", error);
-    throw new Error("Pengajuan tidak ditemukan");
+    throw new Error("Gagal mengambil data pengajuan: " + error.message);
   }
 };
 
-// Mengupdate status pengajuan
-const updateStatusPengajuan = async (pengajuanId, statusPengajuan, timeStampField) => {
+// Fungsi untuk mendapatkan pengajuan berdasarkan ID
+const getPengajuanById = async (pengajuanId) => {
   try {
-    const updateData = { statusPengajuan };
+    const pengajuan = await pengajuanRepository.findPengajuanById(pengajuanId);
+    if (!pengajuan) {
+      throw new Error("Pengajuan tidak ditemukan");
+    }
+    return pengajuan;
+  } catch (error) {
+    throw new Error("Gagal mengambil pengajuan: " + error.message);
+  }
+};
 
-    if (timeStampField) {
-      updateData[timeStampField] = new Date();
+// Fungsi untuk mengupdate status pengajuan
+const updateStatusPengajuan = async (pengajuanId, statusPengajuan) => {
+  try {
+    const validStatus = ["PENDING", "ON_PROCESS", "MENUNGGU_TTD", "SELESAI"];
+
+    if (!validStatus.includes(statusPengajuan.toUpperCase())) {
+      throw new Error("Status tidak valid");
     }
 
-    const update = await prisma.pengajuan.update({
-      where: { pengajuanid: Number(pengajuanId) },
-      data: updateData,
-    });
+    const updatedPengajuan = await pengajuanRepository.updateStatusPengajuan(
+      pengajuanId,
+      statusPengajuan.toUpperCase()
+    );
 
-    return update;
+    if (!updatedPengajuan) {
+      throw new Error(`Pengajuan dengan ID ${pengajuanId} tidak ditemukan`);
+    }
+
+    return updatedPengajuan;
   } catch (error) {
-    console.error("Gagal memperbarui status pengajuan:", error);
-    throw new Error("Gagal memperbarui status pengajuan");
+    throw new Error("Gagal memperbarui status pengajuan: " + error.message);
   }
 };
 
 module.exports = {
-  insertPengajuan,
-  findAllPengajuan,
-  findPengajuanById,
+  createPengajuan,
+  getAllPengajuan,
+  getPengajuanById,
   updateStatusPengajuan,
 };
