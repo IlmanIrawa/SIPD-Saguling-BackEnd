@@ -70,6 +70,7 @@ router.post('/login', async (req, res) => {
 
         res.status(200).json({
             data: {
+                userid:user.userid,
                 nik: user.nik,
                 nama: user.nama,
                 role: user.role,

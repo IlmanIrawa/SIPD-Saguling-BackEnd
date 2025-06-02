@@ -26,12 +26,12 @@ router.get('/me', authorizeJWT, async (req, res, next) => {
     try {
         console.log('req.user:', req.user); 
 
-        const userid = req.user?.userid;
-        if (!userid) {
+        const userId = req.user?.userId;
+        if (!userId) {
             return res.status(400).json({ message: 'Invalid token payload: no userid' });
         }
 
-        const user = await userService.getMe(userid);
+        const user = await userService.getMe(userId);
         res.status(200).json(user);
     } catch (e) {
         next(e);

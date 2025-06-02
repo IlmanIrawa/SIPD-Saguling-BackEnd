@@ -86,9 +86,11 @@ router.patch("/:pengajuanid", authorizeJWT, async (req, res) => {
   try {
     const { pengajuanid } = req.params;
     const { statusPengajuan } = req.body;
+    const { catatan } = req.body;
     const updatePengajuan = await pengajuanService.updateStatusPengajuan(
       pengajuanid,
-      statusPengajuan
+      statusPengajuan,
+      catatan
     );
     res.status(200).json({
       message: "Status pengajuan berhasil diupdate",

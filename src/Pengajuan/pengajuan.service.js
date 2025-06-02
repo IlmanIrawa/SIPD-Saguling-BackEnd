@@ -43,9 +43,9 @@ const getPengajuanById = async (pengajuanId) => {
 };
 
 // Fungsi untuk mengupdate status pengajuan
-const updateStatusPengajuan = async (pengajuanId, statusPengajuan) => {
+const updateStatusPengajuan = async (pengajuanId, statusPengajuan,  catatan) => {
   try {
-    const validStatus = ["PENDING","ON_PROCESS","MENUNGGU_TTD","SELESAI"];
+    const validStatus = ["TOLAK","PENDING","ON_PROCESS","MENUNGGU_TTD","SELESAI"];
 
     if (!validStatus.includes(statusPengajuan.toUpperCase())) {
       throw new Error("Status tidak valid");
@@ -54,6 +54,7 @@ const updateStatusPengajuan = async (pengajuanId, statusPengajuan) => {
     const updatedPengajuan = await pengajuanRepository.updateStatusPengajuan(
       pengajuanId,
       statusPengajuan.toUpperCase(),
+      catatan
     );
 
     if (!updatedPengajuan) {

@@ -1,27 +1,22 @@
-const prisma = require('../db')
+const prisma = require('../db');
 
 // Fungsi untuk membuat pengajuan baru
-const createPengajuan = async (
-  nik,
-      nama,
-      alamat,
-      noHp,
-      ktp,
-      kk,
-      lampiran,
-      keperluan
-) => {
+const createPengajuan = async (nik, nama, alamat, noHp, ktp, kk, lampiran, keperluan, catatan) => {
   try {
-    const newPengajuan = await pengajuanRepository.insertPengajuan(
-      nik,
-      nama,
-      alamat,
-      noHp,
-      ktp,
-      kk,
-      lampiran,
-      keperluan
-    );
+    const newPengajuan = await prisma.pengajuan.create({
+      data: {
+        nik,
+        nama,
+        alamat,
+        noHp,
+        ktp,
+        kk,
+        lampiran,
+        keperluan,
+        statusPengajuan: 'PENDING',
+        catatan,
+      },
+    });
     return newPengajuan;
   } catch (error) {
     throw new Error("Gagal membuat pengajuan: " + error.message);
@@ -31,7 +26,7 @@ const createPengajuan = async (
 // Fungsi untuk mendapatkan semua pengajuan
 const getAllPengajuan = async () => {
   try {
-    const pengajuan = await prisma.pengajuan.findMany(); // langsung pakai prisma
+    const pengajuan = await prisma.pengajuan.findMany();
     return pengajuan;
   } catch (error) {
     throw new Error("Gagal mengambil data pengajuan: " + error.message);
@@ -39,36 +34,29 @@ const getAllPengajuan = async () => {
 };
 
 // Fungsi untuk mendapatkan pengajuan berdasarkan ID
-const getPengajuanById = async (pengajuanId) => {
+const findPengajuanById = async (pengajuanid) => {
   try {
-    const pengajuan = await pengajuanRepository.findPengajuanById(pengajuanId);
-    if (!pengajuan) {
-      throw new Error("Pengajuan tidak ditemukan");
-    }
+    const id = parseInt(pengajuanid, 10); // pastikan pengajuanid bertipe Int
+    const pengajuan = await prisma.pengajuan.findUnique({
+      where: { pengajuanid: id },
+    });
     return pengajuan;
   } catch (error) {
     throw new Error("Gagal mengambil pengajuan: " + error.message);
   }
 };
 
-// Fungsi untuk mengupdate status pengajuan
-const updateStatusPengajuan = async (pengajuanId, statusPengajuan) => {
+// Fungsi untuk mengupdate status dan catatan pengajuan
+const updateStatusPengajuan = async (pengajuanid, statusPengajuan, catatan) => {
   try {
-    const validStatus = ["PENDING", "ON_PROCESS", "MENUNGGU_TTD", "SELESAI"];
-
-    if (!validStatus.includes(statusPengajuan.toUpperCase())) {
-      throw new Error("Status tidak valid");
-    }
-
-    const updatedPengajuan = await pengajuanRepository.updateStatusPengajuan(
-      pengajuanId,
-      statusPengajuan.toUpperCase()
-    );
-
-    if (!updatedPengajuan) {
-      throw new Error(`Pengajuan dengan ID ${pengajuanId} tidak ditemukan`);
-    }
-
+    const id = parseInt(pengajuanid, 10); // pastikan pengajuanid bertipe Int
+    const updatedPengajuan = await prisma.pengajuan.update({
+      where: { pengajuanid: id },
+      data: {
+        statusPengajuan,
+        catatan: catatan ?? "", // default jadi string kosong jika null/undefined
+      },
+    });
     return updatedPengajuan;
   } catch (error) {
     throw new Error("Gagal memperbarui status pengajuan: " + error.message);
@@ -78,6 +66,6 @@ const updateStatusPengajuan = async (pengajuanId, statusPengajuan) => {
 module.exports = {
   createPengajuan,
   getAllPengajuan,
-  getPengajuanById,
+  findPengajuanById,
   updateStatusPengajuan,
 };

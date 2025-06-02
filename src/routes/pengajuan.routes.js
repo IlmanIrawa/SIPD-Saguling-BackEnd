@@ -53,7 +53,7 @@ router.post(
 // Route untuk mendapatkan semua pengajuan
 router.get("/pengajuan", authorizeJWT,async (req, res) => {
   try {
-    const pengajuan = await prisma.pengajuan.findMany(); // Mengambil semua data dengan Prisma
+    const pengajuan = await prisma.pengajuan.findMany(); 
     res.status(200).json(pengajuan);
   } catch (error) {
     res.status(500).json({ message: error.message });
