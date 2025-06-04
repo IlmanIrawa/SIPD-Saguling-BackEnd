@@ -1,4 +1,11 @@
-const beritaRepository = require("./berita.repository");
+const {
+  insertBerita,
+  findBeritas,
+  findBeritaById,
+  editBerita,
+  deleteBerita,
+} = require("./berita.repository");
+
 
 // Fungsi untuk membuat pengajuan baru
 const createBerita = async (judul, tanggal, gambar, isi) => {

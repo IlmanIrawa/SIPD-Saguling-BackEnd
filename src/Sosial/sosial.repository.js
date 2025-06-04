@@ -12,8 +12,13 @@ const insertSosial = async (sosialData) => {
             }
         });
     } catch (error) {
-        console.error('Error saat menambahkan data sosial:', error.message);
-        throw new Error('Gagal menambahkan data sosial');
+        if (error instanceof prisma.PrismaClientKnownRequestError) {
+            // Tangani error khusus, misalnya kode P2002 = duplikat unik
+            if (error.code === 'P2002') {
+                throw new Error('NIK sudah digunakan.');
+            }
+        }
+        throw error;
     }
 };
 
@@ -63,7 +68,13 @@ async function editSosial(sosialid, sosialData) {
         });
         return updatedSosial;
     } catch (error) {
-        throw new Error("Gagal mengedit data sosial: " + error.message);
+        if (error instanceof prisma.PrismaClientKnownRequestError) {
+            // Tangani error khusus, misalnya kode P2002 = duplikat unik
+            if (error.code === 'P2002') {
+                throw new Error('NIK sudah digunakan.');
+            }
+        }
+        throw error;
     }
 }
 

@@ -18,7 +18,7 @@ router.post('/', authorizeJWT, async (req, res) => {
         const newSosial = await createSosial(newSosialData);
         res.status(201).json(newSosial);
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).json({ error: error.message });
     }
 });
 
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
         }
         res.status(200).send(sosials);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).json({ message: error.message });
     }
 });
 

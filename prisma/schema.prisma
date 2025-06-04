@@ -82,6 +82,7 @@ model Lapor {
   isiLaporan String @map("isi_laporan") 
   lampiran   String 
   statusLapor statusLapor @default(MENUNGGU)
+  tanggalLapor DateTime @default(now())
 }
 enum statusLapor {
   MENUNGGU

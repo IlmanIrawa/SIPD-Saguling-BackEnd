@@ -4,7 +4,7 @@ async function insertBerita(beritaData) {
   return await prisma.berita.create({
     data: {
       judul: beritaData.judul,
-      tanggal: userData.tanggal ? new Date(userData.tanggal) : new Date(),
+      tanggal: beritaData.tanggal ? new Date(beritaData.tanggal) : new Date(),
       gambar: beritaData.gambar,
       isiBerita: beritaData.isiBerita,
     },
@@ -33,7 +33,7 @@ async function editBerita(beritaid, beritaData) {
     where: { beritaid: parseInt(beritaid) }, // Perbaikan: Pastikan primary key sesuai skema
     data: {
       judul: beritaData.judul,
-      tanggal: userData.tanggal ? new Date(userData.tanggal) : new Date(),
+      tanggal: beritaData.tanggal ? new Date(beritaData.tanggal) : new Date(),
       gambar: beritaData.gambar,
       isiBerita: beritaData.isiBerita,
     },
