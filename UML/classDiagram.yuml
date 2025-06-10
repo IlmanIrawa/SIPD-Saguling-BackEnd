@@ -1,0 +1,13 @@
+// {type:class}
+[User]1-*>[Pengajuan]
+[User]1-*>[Sosial]
+[User]1-*->[Lapor]
+[User]1-*->[Aset]
+[User]1-*->[Berita]
+
+[User|userid;nik;nama;email;alamat;password]
+[Pengajuan|pengajuanid;nama;alamat;tanggalPengajuan;statusPengajuan]
+[Sosial|sosialid;nama;alamat;jenisBantuan]
+[Lapor|laporid;nama;nohp;isiLaporan;tanggalLapor;statusLapor]
+[Aset|asetid;nama;tanggalBeli;harga;statusAset]
+[Berita|beritaid;judul;tanggal;isiBerita]

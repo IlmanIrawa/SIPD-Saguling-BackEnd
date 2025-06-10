@@ -3,7 +3,7 @@ const router = express.Router()
 const userService = require('./user.service')
 const authorizeJWT = require('../middleware/authorizeJWT');
 
-router.post('/', async (req, res, next) => {
+router.post('/', authorizeJWT,async (req, res, next) => {
     try {
         const userData = req.body
         const user = await userService.createUser(userData)
@@ -13,7 +13,16 @@ router.post('/', async (req, res, next) => {
     }
 })
 
-router.get('/', async (req, res, next) => {
+router.get('/', authorizeJWT,async (req, res, next) => {
+    try {
+        const users = await userService.getAllUser()
+        res.status(200).json(users)
+    } catch (e) {
+        next(e)
+    }
+})
+
+router.get('/stat', async (req, res, next) => {
     try {
         const users = await userService.getAllUser()
         res.status(200).json(users)
@@ -39,7 +48,7 @@ router.get('/me', authorizeJWT, async (req, res, next) => {
 });
 
 
-router.get('/:userid', async (req, res, next) => {
+router.get('/:userid', authorizeJWT, async (req, res, next) => {
     try {
         const userId = parseInt(req.params.userid) 
         const user = await userService.getUserById(userId)
@@ -52,7 +61,7 @@ router.get('/:userid', async (req, res, next) => {
     }
 })
 
-router.patch('/:userid', async (req, res, next) => {
+router.patch('/:userid', authorizeJWT, async (req, res, next) => {
     try {
         const userId = parseInt(req.params.userid)
         const userData = req.body
@@ -63,7 +72,7 @@ router.patch('/:userid', async (req, res, next) => {
     }
 })
 
-router.delete('/:userid', async (req, res, next) => {
+router.delete('/:userid', authorizeJWT, async (req, res, next) => {
     try {
         const userId = parseInt(req.params.userid)
         const deletedUser = await userService.deleteUser(userId)

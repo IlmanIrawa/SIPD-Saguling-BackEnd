@@ -33,6 +33,24 @@ const getAllPengajuan = async () => {
   }
 };
 
+const findPengajuanByNIK = async (nik) => {
+  try {
+    if (nik === undefined || nik === null) {
+      throw new Error("NIK tidak terdefinisi");
+    }
+
+    const pengajuan = await prisma.pengajuan.findMany({
+      where: {
+        nik: nik, // Gunakan nik langsung
+      },
+    });
+
+    return pengajuan;
+  } catch (error) {
+    throw new Error(`Gagal mengambil pengajuan berdasarkan NIK: ${error.message}`);
+  }
+};
+
 // Fungsi untuk mendapatkan pengajuan berdasarkan ID
 const findPengajuanById = async (pengajuanid) => {
   try {
@@ -68,4 +86,5 @@ module.exports = {
   getAllPengajuan,
   findPengajuanById,
   updateStatusPengajuan,
+  findPengajuanByNIK
 };

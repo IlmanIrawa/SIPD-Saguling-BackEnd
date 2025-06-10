@@ -33,7 +33,7 @@ app.use('/api/berita', beritaController)
 app.use('/api/lapor', laporController)
 app.use('/api/pengajuan', pengajuanController)
 app.use('/api/sosial', sosialController)
-app.use('/api/user', authorizeJWT, userController)
+app.use('/api/user', userController)
 app.use('/api', pengajuanRoutes);
 app.use('/api', beritaRoutes);
 app.use("/uploads", express.static(path.join(__dirname, 'middleware', 'uploads'))); 

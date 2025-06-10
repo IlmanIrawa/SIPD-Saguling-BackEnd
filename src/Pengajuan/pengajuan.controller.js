@@ -67,6 +67,40 @@ router.get("/", authorizeJWT, async (req, res) => {
   }
 });
 
+// Route untuk mendapatkan pengajuan berdasarkan NIK
+router.get("/by-nik", authorizeJWT, async (req, res) => {
+  try {
+    console.log("req.user:", req.user);
+
+    const nik = req.user.nik;
+    const role = req.user.role;
+
+    console.log("nik dari req.user:", nik);
+    console.log("role dari req.user:", role);
+
+    // Validasi tambahan: Pastikan NIK di token sesuai dengan NIK di data pengajuan
+    const data = await pengajuanService.getPengajuanByNIK(nik);
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: "Pengajuan tidak ditemukan untuk NIK tersebut" });
+    }
+
+    // Validasi: Periksa apakah NIK di setiap data pengajuan sesuai dengan NIK pengguna
+    const isValid = data.every(pengajuan => pengajuan.nik === nik);
+
+    if (!isValid) {
+      console.warn("Potensi upaya akses ilegal: NIK tidak sesuai dengan data pengajuan.");
+      return res.status(403).json({ message: "Akses ditolak: Anda tidak memiliki izin untuk melihat data ini." });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("Gagal mendapatkan pengajuan berdasarkan NIK:", error);
+    res.status(500).json({ message: "Terjadi kesalahan saat mengambil data", error: error.message });
+  }
+});
+
+
 // Route untuk mendapatkan pengajuan berdasarkan ID
 router.get("/:pengajuanid", authorizeJWT, async (req, res) => {
   try {
@@ -80,6 +114,7 @@ router.get("/:pengajuanid", authorizeJWT, async (req, res) => {
     res.status(400).json({ message: e.message });
   }
 });
+
 
 // Route untuk mengupdate status pengajuan
 router.patch("/:pengajuanid", authorizeJWT, async (req, res) => {

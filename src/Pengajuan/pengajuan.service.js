@@ -42,6 +42,16 @@ const getPengajuanById = async (pengajuanId) => {
   }
 };
 
+const getPengajuanByNIK = async (nik) => {
+  try {
+    const pengajuan = await pengajuanRepository.findPengajuanByNIK(nik);
+    return pengajuan;
+  } catch (error) {
+    throw new Error("Gagal mengambil pengajuan berdasarkan NIK: " + error.message);
+  }
+};
+
+
 // Fungsi untuk mengupdate status pengajuan
 const updateStatusPengajuan = async (pengajuanId, statusPengajuan,  catatan) => {
   try {
@@ -72,4 +82,5 @@ module.exports = {
   getAllPengajuan,
   getPengajuanById,
   updateStatusPengajuan,
+  getPengajuanByNIK
 };
